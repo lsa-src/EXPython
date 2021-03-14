@@ -1,0 +1,156 @@
+OpenCV 소프트웨어 설치 
+ 
+Home - OpenCV
+We transform great ideas into amazing digital products. See our work
+
+opencv.org
+윈도우 명령 프롬프트(cmd)에서 아래 명령을 입력하여 python의 모듈 OpenCV모듈을 설치할 수 있다.
+
+pip install opencv-python    # OpenCV 메인 모듈
+pip install numpy    # 데이터 분석에 사용되는 행렬 연산을 위한 라이브러리
+pip install matplotib   # 도표나 차트, 그래프 등을 구현할 수 있게 만든 그래픽 라이브러리 
+OpenCV 프로그래밍
+
+파이썬에서 OpenCV를 이용하기 위해 위에서 설치한 라이브러리를 import 해온다.
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+이미지 읽기 (Image Read):: 
+
+cv2.imread("경로",모드)
+
+# 경로 : 이미지 파일의 경로
+# 모드 : 이미지 파일을 읽을 때의 옵션
+image = cv2.imread('images/test.jpg',1)
+flag의 종류 ::
+
+cv2.IMREAD_COLOR (1)  # 3 채널 BGR 이미지로 읽는다. Default 값이다.
+cv2.IMREAD_GRAYSCALE (0)  # 1 채널 Grayscale로 읽는다.
+cv2.UNCHANGED (-1)  # 원본을 사용한다
+>>> image.shape
+(225, 225, 3)
+image.shape 함수는 순서대로 height, width, channel의 수를 출력한다.
+
+​
+
+이미지 보기 (Image Show):: 
+
+​
+
+cv2.imshow('title',image)
+﻿
+# title : 윈도우 창에 나타나는 이미지의 제목
+# image : cv2.imread()의 리턴값
+cv2.waitkey(0)
+
+# 키보드 입력을 대기하는 함수로 0이면 키보드 입력이 있을 때 까지 무한대기한다.
+# 특정시간동안 대기하려면 ms값을 넣어주면 된다.
+# ESC를 누를경우 27을 리턴한다.
+cv2.destroyAllWindows()
+
+# 화면에 나타난 윈도우를 종료한다.
+이미지 저장하기 (Image Write):: ​​
+
+​
+
+cv2.imwrite('FileName',image)
+
+# FileName : 이미지가 저장되는 이름
+# image : 저장하려는 이미지
+Window 창 조절하기:: 
+
+cv2.namedWindow('image',모드)
+
+# 모드 종류
+cv2.WINDOW_AUTOSIZE   # 원본 이미지 크기로 고정해 윈도우를 생성
+cv2.WINDOW_NORMAL    # 원본 이미지 크기로 윈도우를 생성하지면 사용자가 크기를 조정할 수 있음
+예제 코드
+
+ 
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+""" 이미지 읽기 """
+image = cv2.imread('images/puppy1.jpg',1) # images폴더의 puppy1.jpg 이미지를 3채널 brg 로읽는다.
+cv2.namedWindow('image',cv2.WINDOW_NORMAL) # 원본이미지 크기로 윈도우를 생성하지만 사용자가 크기 조정 가능
+
+""" 이미지 보기 """
+cv2.imshow('IMAGE_TITLE',image)  # 이미지의 제목을 설정하고 불러온다.
+
+key = cv2.waitkey(0) # 키보드 입력을 대기하는 함수 0이면 key입력이 있을 때 까지 무한대기
+if key == 27:       # ESC를 누르면(ESC == 27이 default값으로 설정되어 있다.)
+    cv2.destroyAllWindows()  # 화면에 나타난 윈도우를 종료한다
+elif key == ord('s'):     # s를 누르면
+    cv2.imwrite('save_test.png',image)    # save_test.png로 이미지를 저장하고
+    cv2.destroyAllWindows()    # 화면에 나타난 윈도우를 종료한다. 
+OpenCV
+
+카메라(웹캡)으로부터 비디오 읽고 저장하기
+
+비디오 읽기 (Video Read):: 
+
+cv2.VideoCapture(mode)
+
+# 비디오 캡쳐 객체 생성하는 클래스
+# mode 종류
+# 0 : 첫번째 카메라 사용(default 값)
+# 1 : 두번째 카메라 사용(카메라가 두개 이상이면 첫번째는 0, 두번쨰는 1로 지정)
+# 2 : 세번째 카메라 사용
+cap = cv2.VideoCapture(0)
+
+cap.isOpened()
+# 비디오 캡쳐 객체가 정상적으로 Open되었는지 여부를 확인 결과를 boolean 값으로 리턴한다.
+
+success, frame = cap.read()
+# read()메소드는 비디오를 한 프레임씩 읽는 함수이며
+# 제대로 프레임을 읽었는지의 여부와 읽은 프레임을 리턴한다.
+# 제대로 프레임을 읽었는지의 여부를 변수 success로 받아 저장하고, 읽은 프레임을 변수 frame에 받아 저장한다.
+
+cap.release() 
+# Open한 캡쳐 객체를 해제한다.
+비디오 저장하기 (Video Write)::
+
+cv2.VideoWriter('FileName', fourcc, frame, size)
+# FlieName : Video가 저장되는 이름 설정
+# fourcc : 코덱 정보
+# frame : 초당 저장될 프레임
+# size : 저장될 size로 (width,height)과 같이 튜플값으로 받는다. 
+
+cv2.VideoWriter_fourcc(*'DIVX')
+# DivX 코덱을 받는다.
+​
+
+예제 코드 :: 
+
+""" 웹캠을 열어 초당 프레임을 이미지로 저장하고 동영상을 저장하는 코드 """
+import cv2
+import time
+cap = cv2.VideoCapture(0)
+if not cap.isOpened():
+    print('첫번째 카메라를 열 수 없습니다.')
+
+fourcc = cv2.VideoWriter_fourcc(*'XVID') # 코덱 설정
+writer = cv2.VideoWriter('test.avi',fourcc,24,(640,480)) # 영상저장을 위한 VideoWriter 인스턴스 생성
+
+while cap.isOpened():
+
+    success, framge = cap.read()  # 프레임을 성공적으로 읽었는지와 프레임 자체를 리턴
+    if success:
+        hms = time.ctime().split(' ')[-2]   # time모듈의 ctime의 [-2]번째 인덱스의 시간,분,초를 받아옴
+        hms2 = hms.split(':')
+        h = hms2[0]  # 시
+        m = hms2[1]  # 분
+        s = hms2[2]  # 초
+        cv2.imwrite(f"camera_images/{h}-{m}-{s}.jpg",frame)   # camera_images 폴더에 초당 프레임을 저장
+        writer.write(frame)   # 프레임 동영상으로 저장
+        cv2.imshow('Camera Window',frame)   # 프레임 실시간으로 출력
+        key = cv2.waitKey(1) & 0xFF   #  키 입력(ASCII)은 8비트 정수이므로 8비트로 나타냄
+        if cv2.waitKey(1) & 0xFF == ord('q'):  # 만약 q를 누르면 
+            break                              # 반복문 종료
+    else:
+        break # 프레임을 성공적으로 읽지 않았으면 종료
+cap.release()
+cv2.destroyAllWindows()
